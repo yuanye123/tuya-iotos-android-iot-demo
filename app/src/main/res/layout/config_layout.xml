@@ -3,28 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="100dp">
 
-    <TextView
-        android:id="@+id/tv_pid"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ly_pid"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:padding="5dp"
-        android:text="PID: " />
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/et_pid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/tv_pid"
-        android:layout_toRightOf="@id/tv_pid"
-        android:maxLines="1" />
+        <TextView
+            android:id="@+id/tv_pid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:text="PID: " />
+
+        <EditText
+            android:id="@+id/et_pid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv_pid"
+            android:layout_toRightOf="@id/tv_pid"
+            android:maxLines="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="env"
+                android:layout_marginStart="30dp"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkbox_id"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_uid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_pid"
+        android:layout_below="@id/ly_pid"
         android:padding="5dp"
         android:text="UID: " />
 

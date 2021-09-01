@@ -11,3 +11,7 @@ android {
         buildConfigField 'String', 'PID', "\"${pid}\""
     }
 }
+
+//buildConfigField 'String', 'UUID', "\"f2ef8b136911f4b0\""
+//buildConfigField 'String', 'AUTHOR_KEY', "\"6PqrvTXJh1ye5tF4SABzl1qNmd53slMX\""
+//buildConfigField 'String', 'PID', "\"U0fxNCEnZptKnQZy\""

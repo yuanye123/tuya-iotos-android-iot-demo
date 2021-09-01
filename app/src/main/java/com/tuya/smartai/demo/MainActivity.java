@@ -10,8 +10,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,9 +26,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tuya.base.Log;
 import com.tuya.smartai.iot_sdk.DPEvent;
+import com.tuya.smartai.iot_sdk.IoTCallback;
 import com.tuya.smartai.iot_sdk.IoTSDKManager;
-import com.tuya.smartai.iot_sdk.Log;
+//import com.tuya.smartai.iot_sdk.Log;
 import com.tuya.smartai.iot_sdk.UpgradeEventCallback;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
@@ -66,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private RecyclerView dpList;
     private DPEventAdapter dpEventAdapter;
     private final int QR_REQUEST_CODE = 0x34;
+    private boolean btnCheck = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +117,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         EditText pid = configView.findViewById(R.id.et_pid);
         EditText uid = configView.findViewById(R.id.et_uid);
         EditText ak = configView.findViewById(R.id.et_ak);
+
+        ((CheckBox)configView.findViewById(R.id.checkbox_id)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                btnCheck = isChecked;
+            }
+        });
 
         configDialog = new AlertDialog.Builder(MainActivity.this)
                 .setCancelable(false)
@@ -200,13 +214,20 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             }
         };
 
+        if(btnCheck){
+            ioTSDKManager.setPreEnv();
+            android.util.Log.d("xsj","check is true");
+        }else{
+            android.util.Log.d("xsj","check is false");
+        }
+
         output("固件版本：" + BuildConfig.VERSION_NAME);
 
         output("init sdk：" + mPid + "/" + mUid + "/" + mAk);
 
         //注意：这里的pid等配置读取自local.properties文件，不能直接使用。请填写你自己的配置！
         ioTSDKManager.initSDK("/sdcard/tuya_iot/", mPid
-                , mUid, mAk, BuildConfig.VERSION_NAME, new IoTSDKManager.IoTCallback() {
+                , mUid, mAk, BuildConfig.VERSION_NAME, new IoTCallback() {
 
                     @Override
                     public void onDpEvent(DPEvent event) {
@@ -229,13 +250,17 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     public void onShorturl(String urlJson) {
                         output("shorturl: " + urlJson);
 
-                        String url = (String) JSONObject.parseObject(urlJson).get("shortUrl");
+                        try{
+                            String url = (String) JSONObject.parseObject(urlJson).get("shortUrl");
 
-                        runOnUiThread(() -> {
-                            qrCode.setVisibility(View.VISIBLE);
-                            output("用涂鸦智能APP扫码激活");
-                            qrCode.setImageBitmap(CodeUtils.createImage(url, 400, 400, null));
-                        });
+                            runOnUiThread(() -> {
+                                qrCode.setVisibility(View.VISIBLE);
+                                output("用涂鸦智能APP扫码激活");
+                                qrCode.setImageBitmap(CodeUtils.createImage(url, 400, 400, null));
+                            });
+                        }catch (Exception e){
+
+                        }
                     }
 
                     @Override
@@ -310,6 +335,11 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                                 }
                                 break;
                         }
+                    }
+
+                    @Override
+                    public void onMqttMsg(int i, org.json.JSONObject jsonObject) {
+
                     }
 
 //                    @Override
